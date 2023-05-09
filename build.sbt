@@ -79,7 +79,7 @@ lazy val retailProductService = project
     libraryDependencies ++= Dependencies.coreDependencies,
     libraryDependencies ++= Dependencies.apiDependencies,
     libraryDependencies ++= Dependencies.streamingDependencies,
-    assembly / mainClass := Some("com.acme.service.RetailProductService"),
+    assembly / mainClass := Some("com.acme.service.RetailProductApp"),
     assembly / assemblyJarName := "run.jar",
   )
   .dependsOn(

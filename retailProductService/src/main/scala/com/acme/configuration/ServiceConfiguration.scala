@@ -8,7 +8,7 @@ import pureconfig.generic.auto._
 
 case class ServiceConfiguration(
                                  environment: String,
-                                 outputTopic: OutputTopic,
+                                 outputTopic: String,
                                  httpServer: HttpServerConfiguration,
                                  kafkaProducerConfiguration: KafkaProducerConfiguration,
                                )
