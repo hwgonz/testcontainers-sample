@@ -1,11 +1,10 @@
 package com.acme.service
 
-
-import cats.effect.Sync
 import com.acme.configuration.ServiceConfiguration
-import com.acme.event.RetailProductSubmittedEvent
-import com.acme.kafka.BasicKafkaProducer
-case class Resources[F[_] : Sync](
+import com.acme.event.RetailProductEvent
+import fs2.kafka.KafkaProducer
+import cats.effect.IO
+case class Resources(
                       serviceConfiguration: ServiceConfiguration,
-                      kafkaClient: BasicKafkaProducer[RetailProductSubmittedEvent]
+                      kafkaClient: KafkaProducer.Metrics[IO, String, RetailProductEvent],
                     )

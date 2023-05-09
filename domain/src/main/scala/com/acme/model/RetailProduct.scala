@@ -1,7 +1,9 @@
 package com.acme.model
 
+import java.util.UUID
+
 case class RetailProduct(
-                          ean: Long,
+                          id: UUID,
                           name: String,
                           description: String
                         )

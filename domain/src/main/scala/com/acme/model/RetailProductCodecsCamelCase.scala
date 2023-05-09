@@ -1,5 +1,6 @@
-package com.acme.event
+package com.acme.model
 
+import com.acme.event.BusinessEventCodecs
 import io.circe.generic.extras.Configuration
 object RetailProductCodecsCamelCase extends BusinessEventCodecs {
 
