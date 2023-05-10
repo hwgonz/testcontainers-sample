@@ -22,7 +22,7 @@ trait RetailProductSpec {
 
   val httpClientResource: Resource[IO, Client[IO]]
 
-  private lazy val url = Uri.unsafeFromString(s"http://${appContainer.host}:${appContainer.mappedPort(AppPort)}/retailproduct")
+  private lazy val url = Uri.unsafeFromString(s"http://${retailProductServiceContainer.host}:${retailProductServiceContainer.mappedPort(AppPort)}/retailproduct")
 
   def retailProductServiceTests(): Unit =
     "Retail Product endpoint" must {

@@ -7,7 +7,7 @@ import org.scalatest.Suite
 trait Containers extends BaseContainers {
   self: Suite =>
 
-  protected lazy val appContainer: GenericContainer = baseAppContainer(
+  protected lazy val retailProductServiceContainer: GenericContainer = baseAppContainer(
     name = "retail-product-app",
     jarName = "run.jar",
     mainClass = "com.acme.service.RetailProductApp",
@@ -19,7 +19,7 @@ trait Containers extends BaseContainers {
 
   override val container: Container = MultipleContainers(
     kafkaContainer,
-    appContainer,
+    retailProductServiceContainer,
   )
 
 }
