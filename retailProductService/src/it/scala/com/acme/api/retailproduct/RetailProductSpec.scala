@@ -27,7 +27,7 @@ trait RetailProductSpec {
   def retailProductServiceTests(): Unit =
     "Retail Product endpoint" must {
 
-      "event emitted" in {
+      "properly emit event" in {
 
         val retailProduct = RetailProduct(
           id = UUID.fromString("ebc295e1-a678-40e5-88cc-1541bcc40545"),
@@ -47,6 +47,8 @@ trait RetailProductSpec {
           .unsafeRunSync()
 
         status mustBe Status.Accepted
+
+        //println(appContainer.container.getLogs)
 
         val event = kafkaConsumer[RetailProductEvent]("retail-product-submitted")
           .collectFirst {

@@ -28,7 +28,7 @@ trait BaseContainers extends ForAllTestContainer {
                                   baseFolder: String,
                                   port: Int = AppPort,
                                   //waitStrategy: WaitStrategy = WaitStrategyForAPI,
-                                  envVars: Map[String, String] = Map.empty
+                                  envVars: Map[String, String] = Map.empty,
                                 ): GenericContainer = new GenericContainer({
     val c = new JavaGenericContainer(
       new ImageFromDockerfile()
@@ -43,7 +43,7 @@ trait BaseContainers extends ForAllTestContainer {
     )
     c.dependsOn(kafkaContainer)
     c.withEnv(envVars.asJava)
-    c.withStartupAttempts(3)
+    //c.withStartupAttempts(3)
     c.withEnv("ENVIRONMENT", "local")
     c.withEnv("APP_PORT", port.toString)
     c.withEnv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")

@@ -17,7 +17,7 @@ class RetailProductSuite extends BaseSpec with Containers
 
   override val httpClientResource: Resource[IO, Client[IO]] = BlazeHttpClient.client[IO](20.seconds, 20.seconds)
 
-  "Bowtie API" should {
+  "Retail Product API" must {
     behave like retailProductServiceTests()
   }
 
