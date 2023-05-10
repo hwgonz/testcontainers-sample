@@ -58,6 +58,9 @@ trait RetailProductSpec {
           .lastOrError
           .unsafeRunSync()
 
+        // Check that we successfully stored this Retail Product Event in Kafka
+        event.data mustBe retailProduct
+
       }
 
     }
