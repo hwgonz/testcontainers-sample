@@ -1,8 +1,8 @@
 services:
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    platform: linux/x86_64 # No ARM support
+    image: confluentinc/cp-zookeeper:7.4.0
+#    platform: linux/x86_64 # No ARM support
     ports:
       - "2181:2181"
     environment:
@@ -10,9 +10,10 @@ services:
     profiles:
       - infra
       - kafka
+
   kafka:
-    image: confluentinc/cp-kafka:latest
-    platform: linux/x86_64 # No ARM support
+    image: confluentinc/cp-kafka:7.4.0
+#    platform: linux/x86_64 # No ARM support
     ports:
       - "9092:9092"
     environment:

@@ -16,7 +16,7 @@ trait BaseContainers extends ForAllTestContainer {
 
   protected val sharedNetwork: Network = Network.newNetwork()
 
-  protected lazy val kafkaContainer: KafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.0.3")) {
+  protected lazy val kafkaContainer: KafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0")) {
     container.withNetwork(sharedNetwork)
     container.withNetworkAliases("kafka")
   }
@@ -43,7 +43,7 @@ trait BaseContainers extends ForAllTestContainer {
     )
     c.dependsOn(kafkaContainer)
     c.withEnv(envVars.asJava)
-
+    c.withStartupAttempts(3)
     c.withEnv("ENVIRONMENT", "local")
     c.withEnv("APP_PORT", port.toString)
     c.withEnv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
