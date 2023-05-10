@@ -1,6 +1,6 @@
 package com.acme.configuration
 
-import com.acme.kafka.configuration.{KafkaProducerConfiguration, OutputTopic}
+import com.acme.kafka.configuration.KafkaProducerConfiguration
 import cats.effect._
 import com.typesafe.config.ConfigFactory
 import pureconfig.ConfigSource

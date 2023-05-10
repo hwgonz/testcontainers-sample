@@ -36,6 +36,7 @@ lazy val root = (project in file("."))
     sharedSettings
   )
   .aggregate(
+    utils,
     domain,
     kafkaSupport,
     retailProductService,
@@ -64,6 +65,7 @@ lazy val utils = project
     name := "utils",
     sharedSettings,
     libraryDependencies ++= Dependencies.coreDependencies,
+    libraryDependencies ++= Dependencies.apiDependencies,
     libraryDependencies ++= Dependencies.streamingDependencies,
     libraryDependencies ++= Dependencies.databaseDependencies,
     libraryDependencies ++= Dependencies.utilDependencies,
@@ -73,14 +75,21 @@ lazy val utils = project
   )
 
 lazy val retailProductService = project
+  .configs(IntegrationTest)
   .settings(
     name := "retailProductService",
     sharedSettings,
     libraryDependencies ++= Dependencies.coreDependencies,
     libraryDependencies ++= Dependencies.apiDependencies,
     libraryDependencies ++= Dependencies.streamingDependencies,
+    libraryDependencies ++= Dependencies.utilDependencies,
+    libraryDependencies ++= Dependencies.testAndITTestDependencies,
+    libraryDependencies ++= Dependencies.loggingDependencies,
     assembly / mainClass := Some("com.acme.service.RetailProductApp"),
     assembly / assemblyJarName := "run.jar",
+    Defaults.itSettings,
+    IntegrationTest / test := (IntegrationTest / test).dependsOn(assembly).value,
+    IntegrationTest / dependencyClasspath := (IntegrationTest / dependencyClasspath).value ++ (Test / exportedProducts).value,
   )
   .dependsOn(
     domain % "compile->compile;test->test;it->test",
@@ -89,13 +98,20 @@ lazy val retailProductService = project
   )
 
 lazy val rpValidationService = project
+  .configs(IntegrationTest)
   .settings(
     name := "retailProductValidationService",
     sharedSettings,
     libraryDependencies ++= Dependencies.coreDependencies,
     libraryDependencies ++= Dependencies.streamingDependencies,
+    libraryDependencies ++= Dependencies.utilDependencies,
+    libraryDependencies ++= Dependencies.testAndITTestDependencies,
+    libraryDependencies ++= Dependencies.loggingDependencies,
     assembly / mainClass := Some("com.acme.service.RPValidationService"),
     assembly / assemblyJarName := "run.jar",
+    Defaults.itSettings,
+    IntegrationTest / test := (IntegrationTest / test).dependsOn(assembly).value,
+    IntegrationTest / dependencyClasspath := (IntegrationTest / dependencyClasspath).value ++ (Test / exportedProducts).value,
   )
   .dependsOn(
     domain % "compile->compile;test->test;it->test",

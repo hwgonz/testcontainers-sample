@@ -7,8 +7,11 @@ import org.http4s.EntityDecoder
 import org.http4s.circe.jsonOf
 import sttp.tapir.Schema
 
+import java.util.UUID
+
 case class RetailProductAccepted(
-                                  receivedTimestamp: Long
+                                  receivedTimestamp: Long,
+                                  id:UUID
                                 ) extends Success
 
 object RetailProductAccepted {

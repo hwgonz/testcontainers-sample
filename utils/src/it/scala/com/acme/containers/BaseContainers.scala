@@ -4,7 +4,7 @@ import com.dimafeng.testcontainers._
 import com.acme.containers.BaseContainers.{AppPort, WaitStrategyForAPI}
 import org.scalatest.Suite
 import org.testcontainers.containers.wait.strategy.{HttpWaitStrategy, LogMessageWaitStrategy, WaitAllStrategy, WaitStrategy}
-import org.testcontainers.containers.{BindMode, Network, GenericContainer => JavaGenericContainer, MockServerContainer => JavaMockServerContainer}
+import org.testcontainers.containers.{Network, GenericContainer => JavaGenericContainer}
 import org.testcontainers.images.builder.ImageFromDockerfile
 import org.testcontainers.utility.DockerImageName
 
@@ -27,7 +27,7 @@ trait BaseContainers extends ForAllTestContainer {
                                   mainClass: String,
                                   baseFolder: String,
                                   port: Int = AppPort,
-                                  waitStrategy: WaitStrategy = WaitStrategyForAPI,
+                                  //waitStrategy: WaitStrategy = WaitStrategyForAPI,
                                   envVars: Map[String, String] = Map.empty
                                 ): GenericContainer = new GenericContainer({
     val c = new JavaGenericContainer(
@@ -41,13 +41,13 @@ trait BaseContainers extends ForAllTestContainer {
             .build()
         }
     )
-
+    c.dependsOn(kafkaContainer)
     c.withEnv(envVars.asJava)
 
     c.withEnv("ENVIRONMENT", "local")
     c.withEnv("APP_PORT", port.toString)
     c.withEnv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
-    c.setWaitStrategy(waitStrategy)
+    //c.setWaitStrategy(waitStrategy)
     c.withExposedPorts(port)
     c.withNetwork(sharedNetwork)
     c.withNetworkAliases(name)
@@ -59,7 +59,7 @@ trait BaseContainers extends ForAllTestContainer {
 
 object BaseContainers {
 
-  val AppPort = 8080
+  val AppPort = 9000
 
   val WaitStrategyForAPI: WaitStrategy = new HttpWaitStrategy().forPath("/health").forStatusCode(200)
 

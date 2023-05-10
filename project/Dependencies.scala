@@ -86,10 +86,10 @@ object Dependencies {
   lazy val testDependencies = commonTestDependencies.map(_ % Test)
 
   lazy val testAndITTestDependencies = (commonTestDependencies ++ Seq(
-    "com.dimafeng" %% "testcontainers-scala" % "0.40.12",
-    "com.dimafeng" %% "testcontainers-scala-mysql" % "0.40.12",
-    "com.dimafeng" %% "testcontainers-scala-kafka" % "0.40.12",
-    "com.dimafeng" %% "testcontainers-scala-mockserver" % "0.40.12",
+    "com.dimafeng" %% "testcontainers-scala" % "0.40.15",
+    "com.dimafeng" %% "testcontainers-scala-mysql" % "0.40.15",
+    "com.dimafeng" %% "testcontainers-scala-kafka" % "0.40.15",
+    "com.dimafeng" %% "testcontainers-scala-mockserver" % "0.40.15",
     "org.mock-server" % "mockserver-client-java" % "5.14.0", // Not latests, but it needs to match the server's version on testcontainers
   )).map(_ % "it,test")
 

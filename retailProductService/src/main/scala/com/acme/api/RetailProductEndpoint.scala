@@ -48,10 +48,11 @@ object RetailProductEndpoint extends Logging {
     val timestamp = Instant.now().toEpochMilli
     val chain: EitherT[F, ErrorType, SuccessType] = for {
       _ <- logEntryT(message = s"Incoming retail product submission, ean=$id", log.info)
-      _ <- EitherT(persistRetailProduct(id, payload.json))
+      result <- EitherT(persistRetailProduct(id, payload.json))
     }
     yield
       RetailProductAccepted(
+        id = result.data.id,
         receivedTimestamp = timestamp,
       )
 

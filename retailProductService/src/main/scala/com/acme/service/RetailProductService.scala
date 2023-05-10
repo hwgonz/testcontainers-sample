@@ -23,7 +23,7 @@ object RetailProductService extends Logging {
                                          data: String
                                    )(implicit
                                      kafkaSuccess: KafkaProducer.Metrics[F, String, RetailProductEvent],
-                                   ): F[Either[ErrorResponse, Boolean]] = {
+                                   ): F[Either[ErrorResponse, RetailProductEvent]] = {
     val productJson = parse(data)
     productJson match {
       case Left(ex) => Sync[F].delay(Left(BadRequestErrorResponse(ex)))
@@ -35,7 +35,7 @@ object RetailProductService extends Logging {
           case Right(product) =>
             val retailProductEvent = RetailProductEvent(product)
             val kafkaSubmit = sendToKafka(retailProductEvent, retailProductTopic)
-            val kafkaLog = Sync[F].delay(log.info(s"Persisted retail product $retailProductId to kafka at ${Instant.now} with event id ${retailProductEvent.header.eventId.getOrElse("")}"))
+            val kafkaLog = Sync[F].delay(log.info(s"Persisted retail product ${retailProductEvent.data.id} to kafka at ${Instant.now} with event id ${retailProductEvent.header.eventId.getOrElse("")}"))
             kafkaSubmit <* kafkaLog
           case Left(err) => Sync[F].delay(Left(BadRequestErrorResponse(err)))
         }
@@ -48,13 +48,13 @@ object RetailProductService extends Logging {
                                         retailProductEvent: RetailProductEvent,
                                         topic: String)(implicit
                                                        kafka: KafkaProducer.Metrics[F, String, RetailProductEvent],
-                                      ): F[Either[ErrorResponse, Boolean]] = {
+                                      ): F[Either[ErrorResponse, RetailProductEvent]] = {
     val key = retailProductEvent.data.id.toString
     val record = ProducerRecords.one(ProducerRecord(topic, key, retailProductEvent))
     kafka.produce(record)
       .flatMap(_.map(f =>
-        if (f.records.nonEmpty) Right[ErrorResponse, Boolean](true)
-        else Left[ErrorResponse, Boolean](DefaultErrorResponse())
+        if (f.records.nonEmpty) Right[ErrorResponse, RetailProductEvent](retailProductEvent)
+        else Left[ErrorResponse, RetailProductEvent](DefaultErrorResponse())
       ))
   }
 
