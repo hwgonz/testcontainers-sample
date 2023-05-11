@@ -5,6 +5,7 @@ import cats.effect.unsafe.implicits.global
 import com.acme.api.utils.Containers
 import com.acme.containers.BaseContainers.AppPort
 import com.acme.BaseSpec
+import com.acme.api.response.failure.BadRequestErrorResponse
 import com.acme.api.response.success.RetailProductAccepted
 import com.acme.containers.helpers.KafkaHelper
 import com.acme.event.RetailProductEvent
@@ -14,6 +15,8 @@ import com.acme.model.RetailProductCodecsCamelCase._
 import com.acme.kafka.serdes.DomainSerDes.jsonDeserializer
 import org.http4s.client.Client
 import org.http4s._
+import io.circe.literal._
+import org.http4s.circe._
 
 import java.util.UUID
 
@@ -60,6 +63,32 @@ trait RetailProductSpec {
 
         // Check that we successfully stored this Retail Product Event in Kafka
         event.data mustBe retailProduct
+
+      }
+
+      "return error when handling wrong body" in {
+
+        val body =
+          json"""{
+              "id": "ABCEDFGHI",
+              "name": "Test product",
+              "description": "A test product"
+              }"""
+
+        val request = Request[IO](
+          method = Method.POST,
+          uri = url,
+        )
+          .withEntity(body)
+
+        val (_, status) = httpClientResource
+          .use(_.run(request).use { response =>
+            response.as[BadRequestErrorResponse].map(_ -> response.status)
+          })
+          .unsafeRunSync()
+
+        println(status)
+        status mustBe Status.BadRequest
 
       }
 
