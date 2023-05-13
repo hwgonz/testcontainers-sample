@@ -1,6 +1,7 @@
 package com.acme.containers
 
 import com.dimafeng.testcontainers._
+import com.dimafeng.testcontainers.scalatest._
 import com.acme.containers.BaseContainers.{AppPort, WaitStrategyForAPI}
 import org.scalatest.Suite
 import org.testcontainers.containers.wait.strategy.{HttpWaitStrategy, LogMessageWaitStrategy, WaitAllStrategy, WaitStrategy}
@@ -11,7 +12,7 @@ import org.testcontainers.utility.DockerImageName
 import java.nio.file.Path
 import scala.jdk.CollectionConverters._
 
-trait BaseContainers extends ForAllTestContainer {
+trait BaseContainers extends TestContainersForAll {
   self: Suite =>
 
   protected val sharedNetwork: Network = Network.newNetwork()
@@ -19,6 +20,14 @@ trait BaseContainers extends ForAllTestContainer {
   protected lazy val kafkaContainer: KafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.4.0")) {
     container.withNetwork(sharedNetwork)
     container.withNetworkAliases("kafka")
+  }
+
+  protected lazy val mySQLContainer: MySQLContainer = new MySQLContainer(
+    mysqlImageVersion = Some(DockerImageName.parse("mysql:8.0")),
+  ) {
+    container.withNetwork(sharedNetwork)
+    container.withNetworkAliases("mysql")
+    container.withEnv("ENVIRONMENT", "local")
   }
 
   protected def baseAppContainer(
