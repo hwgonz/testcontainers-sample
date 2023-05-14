@@ -18,7 +18,8 @@ trait Containers extends BaseContainers {
     baseFolder = "retailProductService/target/scala-2.13",
     envVars = Map(
       "ENVIRONMENT" -> "local",
-    )
+    ),
+    containerDependencies = List(kafkaContainer)
   )
 
   override def startContainers: Containers = {

@@ -7,6 +7,7 @@ import org.scalatest.Suite
 import org.testcontainers.containers.wait.strategy.{HttpWaitStrategy, LogMessageWaitStrategy, WaitAllStrategy, WaitStrategy}
 import org.testcontainers.containers.{Network, GenericContainer => JavaGenericContainer}
 import org.testcontainers.images.builder.ImageFromDockerfile
+import org.testcontainers.lifecycle.Startable
 import org.testcontainers.utility.DockerImageName
 
 import java.nio.file.Path
@@ -38,6 +39,7 @@ trait BaseContainers extends TestContainersForAll {
                                   port: Int = AppPort,
                                   //waitStrategy: WaitStrategy = WaitStrategyForAPI,
                                   envVars: Map[String, String] = Map.empty,
+                                  containerDependencies: List[Startable]
                                 ): GenericContainer = new GenericContainer({
     val c = new JavaGenericContainer(
       new ImageFromDockerfile()
@@ -50,7 +52,7 @@ trait BaseContainers extends TestContainersForAll {
             .build()
         }
     )
-    c.dependsOn(kafkaContainer)
+    c.dependsOn(containerDependencies.asJavaCollection)
     c.withEnv(envVars.asJava)
     //c.withStartupAttempts(3)
     c.withEnv("ENVIRONMENT", "local")
